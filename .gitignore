@@ -13,3 +13,4 @@ src-tauri/icons/android/
 src-tauri/icons/ios/
 *.sqlite
 *.sqlite-*
+.vercel
