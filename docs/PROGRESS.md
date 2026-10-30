@@ -1,59 +1,72 @@
 # Windy progress
 
-Last updated: 2026-10-30. Written on branch `docs/ram-decision-and-perf-harness`, which starts from `main` at `ad578f7`.
+Last updated: 2026-10-30, against `main` at `0a864a1`. `main` is GitHub's default branch. `feat/bootstrap` is deleted.
+No tag, release, deploy or installer exists.
 
-## State
+## Verified, and where the evidence is
 
-`main` is GitHub's default branch and holds everything: `windy-core` (history, search, storage, settings), `windy-platform`
-(Windows is real; macOS and Linux are compiled in CI only), the Tauri shell, the popup and settings UI, the website, the CI and
-release workflows, the security review with `cargo audit` / `npm audit` results, the performance write-up (`PERF.md`) and
-screenshots, and Copilot's website-test fix. `feat/bootstrap` is deleted, locally and on origin.
+| What | Evidence |
+|---|---|
+| Rust unit tests | `cargo test -p windy-core -p windy-platform` on `0a864a1`: 78 + 3 passed, 0 failed |
+| UI and website behaviour (demo mode) | 16 Playwright tests (11 popup, 5 website) pass locally on `0a864a1` |
+| Real app, Windows 11, release build | Clipboard capture of copied text, the global hotkey, popup, arrow-key selection, pinning, search, the settings window (after the fix), the app's own "Clear all". `docs/screenshots/` are captures of those windows; method in `scripts/perf/README.md` |
+| Start-up, latency, memory, CPU | `PERF.md` (one machine, empty history) |
+| Page loads | The WebView2 debug probe shows both pages loading with no failed requests and no console errors (after the favicon fix) |
+| Website, local | Lighthouse 100 on all four categories, desktop and mobile; LCP 223 ms, CLS 0.00 (`PERF.md`) |
+| Dependencies | `cargo audit`: no vulnerabilities, 5 transitive warnings; `npm audit`: 0 (`SECURITY-REVIEW.md`) |
+| CI | Read from the public GitHub API on 2026-10-30: `ci.yml` succeeded on `001a62e` and `ad578f7`. Confirm the latest run yourself |
 
-Checked on this Windows PC with a release build: clipboard capture, the global hotkey, popup, search, pin, delete, clear, the
-tray, and the settings window. The full Playwright suite (16 tests: 11 popup, 5 website) passes locally on `main` as merged.
+ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB; the owner raised the budget from 80 MB to **120 MB**
+(`DECISIONS.md`, dated note in `ADR-001-stack.md`). The headroom is small.
 
-ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB against the original 80 MB budget; the project owner
-chose to keep the pre-warmed popup and raise the budget to **120 MB** (`DECISIONS.md`, with a dated note in `ADR-001-stack.md`).
+## Not verified, and known limitations
 
-## Merged this session
+- **Never exercised in the real app**: selecting an item (copy back, and paste), `Alt+Backspace` delete, the tray icon and its
+  menu, image and file items, ignore rules and the password-manager exclusion, pausing, "clear on quit", changing the hotkey,
+  settings persistence. Some of the logic behind these may be covered by the core unit tests and the UI by the demo-mode
+  tests (which tests cover which behaviour was not audited), but the real app was not driven through any of them. An earlier
+  version of this file wrongly said the tray and delete had been checked.
+- **Platforms**: only Windows 11 (build 26300) has run the app. macOS and Linux are compiled in CI and nothing more. Windows 10
+  is untested. Linux is X11 and XWayland only. macOS and Linux report no foreground app, so app-based ignore rules do nothing there.
+- **Website claims that nothing has tested**: Windows 10, macOS 12 or newer, and the FAQ's statement that Wayland works with
+  the data-control protocol (`DECISIONS.md` says v0.1 Linux is X11 and XWayland only). "Makes no network requests" rests on
+  code review and having no updater, not on a packet capture.
+- **Installers**: `release.yml` has never been run. The NSIS, DMG, AppImage and deb outputs, the version-free renaming step,
+  and the macOS universal build are unverified. All local builds use the GNU/MinGW toolchain (linker warning: `.rsrc merge
+  failure: multiple non-default manifests`); the installers will use MSVC on `windows-latest`.
+- **Performance**: a first data point on one machine with an empty history. Search keystroke latency and any populated
+  history are unmeasured; the app caps history at 999 items, so the ADR's 10,000-item condition cannot occur.
+- **Security** (`SECURITY-REVIEW.md`, written with the author's own tooling, not an independent audit): no encryption at rest,
+  no explicit Windows ACL on the history file, paste is a timed `Ctrl+V` that can land in the wrong window, releases are unsigned.
+- **Not in v0.1**: launch at login, preview slide-out, item editor, hold-to-cycle hotkey, pin drag-reorder, window and status-item
+  popup positions, encryption at rest.
+- **Local state left by testing**: running the app created `%LOCALAPPDATA%\app.windy.clipboard` (history cleared through the
+  app). The harness scripts are in `scripts/perf/`; they take over keyboard, mouse and clipboard while they run.
 
-Merged locally and pushed straight to `main` (`gh` is not installed, so no pull requests were opened for them):
+## Only the owner can do these
 
-- `fix/settings-window-blank`: the settings window opened blank (webview stuck on `about:blank`); the command that opens it
-  is now async.
-- `fix/clear-shortcut`: `Alt+Ctrl+Backspace` could never clear; adds a regression test.
-- `docs/perf-and-screenshots`: `PERF.md`, `docs/screenshots/`, the gate result.
+1. **Confirm CI** on the latest `main` run has finished green.
+2. **Dry-run the release workflow**: Actions, "release", Run workflow on `main`. A manual run builds the installers as
+   artifacts only and creates no Release. Install and try them, including on a Mac and a Linux machine.
+3. **Tag and publish**: `git tag v0.1.0` then `git push origin v0.1.0`. A `v*` tag runs the `publish` job, which creates the
+   GitHub Release with `SHA256SUMS.txt`. Check that repo Actions settings allow the workflow its `contents: write`
+   permission. The site's download links use `releases/latest`, which only resolves once a release exists.
+4. **Deploy the website**: connect the repository to a host (the config is `vercel.json` with `outputDirectory: site`) and set
+   the domain. Nothing deploys automatically.
+5. **Contact**: there is no email address anywhere. The site and `SECURITY.md` point to GitHub Issues and GitHub's private
+   vulnerability reporting. Decide whether to add an email, and enable private vulnerability reporting in the repository's
+   security settings, otherwise the `SECURITY.md` link does not work.
+6. **Code signing**: a Windows code-signing certificate, and an Apple Developer ID with notarization for macOS. Add the secrets
+   to the repository. `release.yml` has no signing step today, so builds are unsigned and SmartScreen and Gatekeeper will warn.
+7. **Test on hardware I do not have**: Windows 10, macOS, Linux on X11 and on Wayland.
+8. **Decide what the site may claim** (Wayland, Windows 10, macOS 12) until those platforms are tested.
+9. **Open decisions**: encryption at rest in v1; a per-app paste key; the ADR gate's 10,000-item wording; which Linux distros to cover.
+10. **Optional**: delete the merged branches on origin (`copilot/fix-failing-github-actions-job`, `docs/perf-and-screenshots`,
+    `docs/ram-decision-and-perf-harness`, `feat/security-audit`, `fix/clear-shortcut`, `fix/favicon-500`,
+    `fix/settings-window-blank`); run the 999-item measurement by copying the `tools/seed` output into the app data folder
+    (this replaces any real history there); get `gh` installed (`winget install GitHub.cli` failed here with an empty log).
 
-Their branches still exist on origin, along with `feat/security-audit` and `copilot/fix-failing-github-actions-job`. All are
-merged and can be deleted.
-
-## Tools in the repo
-
-- `scripts/perf/windy-perf.ps1` (Windows): start-up and memory, hotkey-to-popup latency, screenshots, and a WebView2
-  debug-port probe, all against the real app. It takes over keyboard, mouse and clipboard while it runs; read
-  `scripts/perf/README.md` first.
-- `tools/seed`: writes a synthetic 999-item `history.sqlite` and `settings.json`. Not part of the app workspace or CI.
-
-## Needs you
-
-1. **Check CI.** I cannot read GitHub Actions from here. Pushes to `main` run `ci.yml`; please look at the result for the
-   three merges.
-2. **A 999-item measurement** needs the seeded database copied into `%LOCALAPPDATA%\app.windy.clipboard`, which replaces any
-   real history there. The auto-mode classifier refused to let me write there, and the README explains the manual steps.
-3. **`gh`.** `winget install GitHub.cli` failed on this machine with an empty log.
-4. **Merge `fix/favicon-500`.** The `500` logged when a page loads was the implicit `GET /favicon.ico`. Neither page declared an
-   icon, and Tauri answers any path it cannot find with a 500 because `ui/` has no `index.html`. It happened on the release
-   build too (not dev-only), on both the popup and settings pages, and had no user-visible effect. The branch adds an inline
-   `<link rel="icon" href="data:,">` to both pages; the probe shows no favicon request and no console error afterwards.
-
-## Not done
-
-- No tag, no GitHub Release, no deploy, and no installer has been built. The release workflow only builds installers on a
-  manual run and publishes only for a `v*` tag.
-- Search keystroke latency, and anything with a populated history.
-- macOS and Linux have never run. They compile in CI only. The 120 MB RAM budget is set from one Windows machine.
-
-## Carried over from earlier notes (not revisited this session)
+## Carried over from earlier notes (not revisited)
 
 - Snowflake Cortex backend for the agents: `SNOWFLAKE_ACCOUNT` and `SNOWFLAKE_CORTEX_MODEL` were not set, and routing the
   agents there needs a small translating proxy. Until then the agents run on the session's own model.
@@ -61,15 +74,6 @@ merged and can be deleted.
 
 ## Decisions
 
-- Tauri 2 stack (ADR-001), idle-RAM budget amended to 120 MB (see `DECISIONS.md`).
+- Tauri 2 stack (ADR-001); idle-RAM budget 120 MB (see `DECISIONS.md`).
 - Not ported: paste stack (disabled in Maccy: `multiSelectionEnabled = false`), App Intents, Vision OCR, Sparkle auto-update.
 - `CanUploadToCloudClipboard=0` alone does not hide an item from local history (Microsoft docs say it only affects sync).
-
-## Open questions
-
-- Ship encryption-at-rest in v1 (adds SQLCipher and a performance cost) or defer?
-- Per-app paste key (terminals using Ctrl+Shift+V) is not in Maccy; add it or document it as a limitation?
-- Which Linux distros for CI and the manual matrix beyond Ubuntu and Fedora?
-- macOS and Linux builds can only be produced and tested in CI or on other hardware. Is there a Mac and a Linux machine for
-  the manual matrix?
-- The ADR gate asks for a 10,000-item history, but the app caps history at 999. Should the gate wording change?
