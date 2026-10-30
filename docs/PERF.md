@@ -10,11 +10,12 @@ Measured 2026-10-30 on one Windows machine, on a release build of `windy.exe`. T
 | Popup visible after the hotkey | < 50 ms | Window visible: median **2.4 ms**, p95 4.9 ms, max 7.3 ms. First painted pixel: median **18.3 ms**, p95 25.1 ms, max 35.0 ms (n = 38, empty history) | Pass, for an empty history only |
 | Search keystroke to painted result | < 16 ms | Not measured | Open |
 | Idle CPU | about 0% | **0.15%** of one core, summed over all 7 app processes, 30 s window | Pass |
-| Idle RAM, all app processes | < 80 MB | **103.4 MB** private working set across 7 processes (113.2 MB after 30 popup open/close cycles). Total working set, which counts shared pages, was 376 MB | **Fail** |
+| Idle RAM, all app processes | < 80 MB, amended to **< 120 MB** on 2026-10-30 | **103.4 MB** private working set across 7 processes (113.2 MB after 30 popup open/close cycles). Total working set, which counts shared pages, was 376 MB | **Fail** against 80 MB; passes the amended 120 MB with little headroom |
 | 10,000-item history | measured with 10,000 items | Not possible as written: `Settings::clamp` caps `history_size` at 999. The 999-item run was not done (see "Not measured") | Gate precondition does not match the product |
 
-The ADR does not say which memory metric the 80 MB budget means. Private working set is the figure Task Manager shows as
-"Memory"; it fails the budget. The total working set fails it by a much larger margin.
+The ADR does not say which memory metric the budget means. Private working set is the figure Task Manager shows as
+"Memory"; it fails the original 80 MB budget and passes the amended 120 MB one. The total working set (376 MB) would fail
+either, which is why the amended budget is defined on private working set.
 
 ### Where the memory goes
 
@@ -34,7 +35,10 @@ does not meet the budget.
 The trade-off, stated as reasoning and not as a measurement: dropping the resident webview would cut idle RAM to
 roughly the Rust process, but the popup would then pay a webview start-up on every open. The start-up runs below show a
 first webview taking hundreds of milliseconds to a few seconds, which would break the 50 ms budget. The ADR's native-popup
-fallback is the option that could meet both. This needs a decision; it is not made here.
+fallback is the option that could meet both.
+
+Decision (2026-10-30, project owner): keep the pre-warmed popup and raise the budget to 120 MB. The other two options were
+not taken. See `DECISIONS.md`.
 
 ## Start-up
 
@@ -51,8 +55,11 @@ registered. Start-up time is not part of the ADR gate.
 
 ## How it was measured
 
-All of it drives the real `windy.exe`, started from a PowerShell script. The scripts are scratch files and are not in the
-repository.
+All of it drives the real `windy.exe`, started from a PowerShell script. That logic now lives in
+`scripts/perf/windy-perf.ps1` (see `scripts/perf/README.md`; it takes over the keyboard, mouse and clipboard while it
+runs). The tables above were measured with earlier scratch versions of the same code, which were then merged into that one
+script. Short re-runs of the merged script on the rebuilt binary agreed (window visible median 2.2 ms, first paint 19 ms,
+99.5 MB private working set after a short idle), but the tables were not regenerated with it.
 
 - **Hotkey to popup**: inject `Ctrl+Alt+V` with `keybd_event` (the real `RegisterHotKey` path, but not a physical
   keyboard, so keyboard hardware latency is excluded). Time zero is just before the `V` key-down. "Window visible" is the
@@ -82,9 +89,10 @@ repository.
 ## Not measured
 
 - Search keystroke to painted result (budget 16 ms).
-- A populated history. The app caps history at 999 items. A 999-item run needs a seeded database in
-  `%LOCALAPPDATA%\app.windy.clipboard`; that was not placed there. Opening the popup refreshes the list, so latency to a
-  fully painted populated list is not covered by the numbers above.
+- A populated history. The app caps history at 999 items. `tools/seed` writes a synthetic 999-item database, but it has to
+  be copied by hand into `%LOCALAPPDATA%\app.windy.clipboard`, which replaces any real history there (see
+  `scripts/perf/README.md`); that was not done. Opening the popup refreshes the list, so latency to a fully painted
+  populated list is not covered by the numbers above.
 - Idle RAM with the settings window open.
 - macOS and Linux.
 
