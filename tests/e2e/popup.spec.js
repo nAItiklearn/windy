@@ -62,6 +62,17 @@ test("Alt+Backspace deletes the selected item", async ({ page }) => {
   await expect(rows(page).first()).not.toContainText("github.com");
 });
 
+test("Alt+Ctrl+Backspace clears unpinned items after a second press and keeps pins", async ({ page }) => {
+  await open(page);
+  await page.locator("#q").focus();
+  await page.keyboard.press("Alt+p");
+  await page.keyboard.press("Alt+Control+Backspace");
+  await expect(page.locator("#status")).toContainText("Click again to clear unpinned items");
+  await expect(rows(page).nth(1)).toBeVisible();
+  await page.keyboard.press("Alt+Control+Backspace");
+  await expect(rows(page)).toHaveCount(1);
+});
+
 test("Clear needs a second click", async ({ page }) => {
   await open(page);
   await page.locator("#clear-all").click();

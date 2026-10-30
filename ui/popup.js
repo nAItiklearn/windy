@@ -155,7 +155,7 @@ document.addEventListener("keydown", async (e) => {
   else if (primary && k === "ArrowUp") { e.preventDefault(); move(0); }
   else if (k === "Enter") { e.preventDefault(); if (rows[sel]) choose(sel, modifierFor(e)); }
   else if (e.altKey && k.toLowerCase() === "p") { e.preventDefault(); if (rows[sel]) { await api.togglePin(rows[sel].id); await refresh(true); } }
-  else if (e.altKey && k === "Backspace") { e.preventDefault(); removeSelected(); }
+  else if (e.altKey && !primary && k === "Backspace") { e.preventDefault(); removeSelected(); }
   else if (e.altKey && primary && k === "Backspace") { e.preventDefault(); onClear(e.shiftKey); }
   else if (primary && k === ",") { e.preventDefault(); api.openSettings(); }
   else if (primary && /^[1-9]$/.test(k)) {
