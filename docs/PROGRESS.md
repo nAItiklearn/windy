@@ -1,42 +1,62 @@
 # Windy progress
 
-Last updated: 2026-10-30. Branch: `feat/bootstrap` (local only, nothing pushed).
+Last updated: 2026-10-30. Written on branch `docs/perf-and-screenshots`, which starts from `main` at `5e590e0`.
 
-## Update (later on 2026-10-30)
-- Toolchain: `stable-x86_64-pc-windows-gnu`, rustc 1.99.1, WinLibs gcc reports `x86_64-w64-mingw32`; a tiny `cargo build` ran with `CARGO_TARGET_DIR=D:\windy-target`. See `docs/DECISIONS.md`. This supersedes blocker 1 below.
-- `crates/windy-core` written (types, settings, title, search, sorter, action, clipboard pipeline, history, SQLite storage). `cargo test -p windy-core`: **78 passed, 0 failed**. `cargo clippy --all-targets -- -D warnings`: clean. `cargo fmt --all` applied; the final `--check` and a re-run of the tests after the clippy fix were not completed (shell rejected the command).
-- Not done yet: committing (shell rejected `git`), `windy-platform`, Tauri shell, UI, Playwright, security review, measurements, website, CI/release files.
-- Still-open mapping of Maccy tests to Rust tests (`docs/TEST-MATRIX.md`) is not written. Not ported on purpose: the `x.nspasteboard.ModifiedType` shortcut (macOS-only), OCR titles.
+## State
 
-## Done earlier (with evidence)
-- Repo initialised locally, `.gitignore` (`.env`, `target/`, `node_modules/`, `reference/`), `.env.example` with empty Snowflake variables.
-- Reference screenshots moved to `reference/` (gitignored, never committed).
-- Maccy cloned shallow to `D:\windy-scratch\Maccy` (outside the repo). Read: Clipboard, Search, History, HistoryItem, HistoryItemDecorator, Storage, Sorter, PopupPosition, Popup, FloatingPanel, KeyChord, HistoryItemAction, AppState, Footer, AppDelegate, all settings panes, pasteboard type constants, Defaults keys, test names.
-- `docs/MACCY-SPEC.md` written from that source (sections 1-12).
-- `docs/PORTING-MAP.md` written; Windows clipboard flags, Wayland data-control support and the GlobalShortcuts portal were checked against live docs on 2026-10-30.
-- `docs/ADR-001-stack.md`: Tauri 2 + Rust core + Svelte, with a measurement gate.
-- Nine specialist agents in `.claude/agents/` (architect, backend, frontend, platform-engineer, debugger, security-reviewer, web-designer, devops-release, qa-tester) with exclusive file ownership.
+`main` holds the whole first batch: `windy-core` (history, search, storage, settings), `windy-platform` (Windows is real;
+macOS and Linux are compiled in CI only), the Tauri shell, the popup and settings UI, the website, the CI and release
+workflows, and the security review with `cargo audit` / `npm audit` results (PR #1).
 
-## Blocked (needs you)
-1. **No Rust toolchain.** `cargo`/`rustc`/`rustup` are not installed. Tauri on Windows also needs the MSVC C++ Build Tools (several GB) and WebView2. Installing these changes your machine and needs admin approval; I have not done it. Say "install the toolchain" and I will use `winget` (rustup + Visual Studio Build Tools C++ workload), or tell me if you already have another route.
-2. **No `gh` CLI and no push credentials checked.** `git ls-remote` shows `nAItiklearn/windy` exists and is empty. Pushing the branch, tags, releases and any deploy remain yours to approve.
-3. **Snowflake Cortex backend for agents.** `SNOWFLAKE_PAT` is set in the environment (value not read or printed); `SNOWFLAKE_ACCOUNT` and `SNOWFLAKE_CORTEX_MODEL` are not. Claude Code subagents speak the Anthropic Messages API; Cortex REST is a different API, so routing them needs a small translating proxy (a local `ANTHROPIC_BASE_URL` endpoint). I need the account identifier and model name, and a decision on whether I should build that proxy. Until then the agents run on the session's own model.
-4. **`rea` MCP.** Source inspected (v6.8.0, MIT, `bin` = `scripts/rea.mjs`; the `prepare` hook only runs for installs from the repo). Its documented install is `npx rea-agents setup`, which interactively edits your agent configuration. Please run it yourself: type `! npx rea-agents setup` (from a neutral directory, not from `D:\windy`). Maccy is plain Swift source, so direct reading was sufficient for Phase 1.
-5. **Shell sandbox intermittently unavailable** during this session, which blocked `git commit`. The files are on disk but **uncommitted**; first action next session is a commit.
+Checked on this Windows PC with a release build: clipboard capture, the global hotkey, popup, search, pin, delete, clear,
+the tray, and the settings window (after the fix below). Measurements and screenshots are in `PERF.md` and
+`docs/screenshots/`. The ADR-001 gate **passes on popup latency and idle CPU and fails on idle RAM** (103 MB against 80 MB);
+see `DECISIONS.md`.
 
-## In progress
-- Nothing running.
+## Branches waiting for a pull request
 
-## Next (in order, once unblocked)
-1. Commit docs. 2. Install toolchain. 3. Scaffold workspace (`windy-core`, `windy-platform`, `src-tauri`, `ui`). 4. Core with tests ported from Maccy. 5. Demo-mode UI + Playwright. 6. Windows platform layer (this machine). 7. Measure the ADR gate. 8. macOS/Linux layers (cannot be run here; CI only). 9. Security review, website, ship workflows.
+`gh` is not installed on this PC, so none of these has a PR yet.
+
+| Branch | What | Compare |
+|---|---|---|
+| `fix/settings-window-blank` | The settings window opened blank (webview stuck on `about:blank`); the command that opens it is now async | https://github.com/nAItiklearn/windy/compare/main...fix/settings-window-blank?expand=1 |
+| `fix/clear-shortcut` | `Alt+Ctrl+Backspace` could never clear (the delete branch matched first); adds a regression test | https://github.com/nAItiklearn/windy/compare/main...fix/clear-shortcut?expand=1 |
+| `docs/perf-and-screenshots` | `PERF.md`, screenshots, this file, the gate result in `DECISIONS.md` | https://github.com/nAItiklearn/windy/compare/main...docs/perf-and-screenshots?expand=1 |
+
+## Needs you
+
+1. **Default branch.** GitHub's default branch is still `feat/bootstrap`. Set it to `main` (Settings, General), then
+   `feat/bootstrap` can be deleted on origin. It is already deleted locally.
+2. **Idle RAM gate.** Keep the pre-warmed popup and amend the 80 MB budget, drop the webview when the popup closes, or
+   build the native popup. See `DECISIONS.md`.
+3. **A 999-item measurement** needs a seeded database in `%LOCALAPPDATA%\app.windy.clipboard`. The auto-mode classifier
+   refused to let me write there, so I did not. The synthetic database is at `D:\windy-scratch\seeddata`.
+4. **`gh`.** `winget install GitHub.cli` failed on this machine with an empty log.
+5. `origin/copilot/fix-failing-github-actions-job` exists. I have not looked at it.
+
+## Not done
+
+- No tag, no GitHub Release, no deploy, and no installer has been built. The release workflow only builds installers on a
+  manual run and publishes only for a `v*` tag.
+- Search keystroke latency, and anything with a populated history.
+- macOS and Linux have never run. They compile in CI only.
+
+## Carried over from earlier notes (not revisited this session)
+
+- Snowflake Cortex backend for the agents: `SNOWFLAKE_ACCOUNT` and `SNOWFLAKE_CORTEX_MODEL` were not set, and routing the
+  agents there needs a small translating proxy. Until then the agents run on the session's own model.
+- `rea` MCP: install is `npx rea-agents setup`, interactive, to be run by you from a neutral directory.
 
 ## Decisions
-- Tauri 2 stack (ADR-001), gated on measured RAM/latency.
+
+- Tauri 2 stack (ADR-001), gated on measured RAM and latency.
 - Not ported: paste stack (disabled in Maccy: `multiSelectionEnabled = false`), App Intents, Vision OCR, Sparkle auto-update.
 - `CanUploadToCloudClipboard=0` alone does not hide an item from local history (Microsoft docs say it only affects sync).
 
 ## Open questions
-- Ship encryption-at-rest in v1 (adds SQLCipher and a perf cost) or defer?
-- Per-app paste key (terminals using Ctrl+Shift+V) is not in Maccy; add or document as a limitation?
-- Which Linux distros for CI/manual matrix beyond Ubuntu and Fedora?
-- macOS and Linux builds can only be produced and tested in CI or on other hardware. Do you have a Mac and a Linux machine for the manual matrix?
+
+- Ship encryption-at-rest in v1 (adds SQLCipher and a performance cost) or defer?
+- Per-app paste key (terminals using Ctrl+Shift+V) is not in Maccy; add it or document it as a limitation?
+- Which Linux distros for CI and the manual matrix beyond Ubuntu and Fedora?
+- macOS and Linux builds can only be produced and tested in CI or on other hardware. Is there a Mac and a Linux machine for
+  the manual matrix?
