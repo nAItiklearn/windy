@@ -12,9 +12,9 @@ Latest release: <https://github.com/nAItiklearn/windy/releases/latest>
 
 | System | File |
 |---|---|
-| Windows 10/11 | `Windy-windows-x64-setup.exe` |
-| macOS 12+ | `Windy-macos-universal.dmg` |
-| Linux x86-64 | `Windy-linux-x64.AppImage`, `Windy-linux-x64.deb` |
+| Windows (developed on Windows 11; Windows 10 should work, not yet verified) | `Windy-windows-x64-setup.exe` |
+| macOS (12 or newer should work, not yet verified) | `Windy-macos-universal.dmg` |
+| Linux x86-64 (X11 and XWayland) | `Windy-linux-x64.AppImage`, `Windy-linux-x64.deb` |
 
 File names never contain a version, so `/releases/latest/download/<file>` always resolves.
 `SHA256SUMS.txt` is attached to every release. Early builds are **not code-signed**: Windows SmartScreen and
@@ -31,8 +31,9 @@ macOS Gatekeeper will warn on first launch.
 
 ## Limits you should know
 
-- Linux Wayland: clipboard history needs compositor support; X11 works. Global shortcuts and cursor position are
-  restricted on GNOME/Wayland (see `docs/PORTING-MAP.md`).
+- Linux: v0.1 supports X11, including XWayland on Wayland desktops. Native Wayland is a known limitation of this
+  version (clipboard history needs compositor support; global shortcuts and cursor position are restricted on
+  GNOME/Wayland, see `docs/PORTING-MAP.md`). The Linux build has not yet been run on real hardware.
 - Paste automation sends `Ctrl+V`. Terminals that paste with `Ctrl+Shift+V` need `Enter` (copy) and a manual paste.
 - Popup placement supports "cursor" and "screen centre". macOS and Linux builds are compiled and unit-tested in CI;
   the author has only run the Windows build by hand.

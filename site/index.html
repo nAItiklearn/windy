@@ -58,9 +58,9 @@
     <h2 id="dl-h">Download</h2>
     <p class="muted" id="dl-detected">Pick your system.</p>
     <div class="downloads" id="downloads">
-      <a class="card" data-os="windows" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>Windows</strong><span>Installer (.exe), Windows 10 and 11</span></a>
-      <a class="card" data-os="macos" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>macOS</strong><span>Disk image (.dmg), 12 or newer</span></a>
-      <a class="card" data-os="linux" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>Linux</strong><span>AppImage, x86-64</span></a>
+      <a class="card" data-os="windows" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>Windows</strong><span>Installer (.exe). Developed on Windows 11; Windows 10 should work, not yet verified</span></a>
+      <a class="card" data-os="macos" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>macOS</strong><span>Disk image (.dmg). macOS 12 or newer should work, not yet verified</span></a>
+      <a class="card" data-os="linux" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>Linux</strong><span>AppImage, x86-64. X11 and XWayland</span></a>
     </div>
     <p class="muted small">File names never contain a version, so these links always give you the latest release. Checksums are listed on the <a href="https://github.com/nAItiklearn/windy/releases/latest">release page</a>.</p>
   </section>
@@ -70,7 +70,7 @@
     <details><summary>Does Windy send my clipboard anywhere?</summary><p>No. History lives in a local database on your device. Windy makes no network requests while running.</p></details>
     <details><summary>Will it record my passwords?</summary><p>Windy skips copies that password managers mark as sensitive, and you can ignore any app or any pattern you like in Settings.</p></details>
     <details><summary>Is it the same as Maccy?</summary><p>No. Maccy is a macOS app. Windy follows the same simple behaviour but is a separate project that runs on Windows, macOS and Linux.</p></details>
-    <details><summary>Does it work on Linux Wayland?</summary><p>Clipboard history needs compositor support. It works on X11 and on Wayland desktops that provide the data-control protocol (such as KDE and wlroots-based ones). GNOME on Wayland has limits, documented in the project README.</p></details>
+    <details><summary>Does it work on Linux Wayland?</summary><p>Not natively yet. Linux support in v0.1 is X11, including XWayland on Wayland desktops. Native Wayland is a known limitation of this version, so clipboard history, global shortcuts and popup placement on Wayland sessions may not work. The Linux build has not yet been run on real hardware, so treat Linux as unverified. Details are in the project README.</p></details>
     <details><summary>The installer says the publisher is unknown.</summary><p>Early builds are not code-signed, so Windows SmartScreen and macOS Gatekeeper warn you. The source and checksums are public so you can verify what you run.</p></details>
     <details><summary>How much does it cost?</summary><p>Nothing. It is MIT licensed.</p></details>
   </section>
