@@ -25,14 +25,19 @@ see `DECISIONS.md`.
 
 ## Needs you
 
-1. **Default branch.** GitHub's default branch is still `feat/bootstrap`. Set it to `main` (Settings, General), then
-   `feat/bootstrap` can be deleted on origin. It is already deleted locally.
+1. **Default branch, and do not delete `feat/bootstrap` on origin yet.** GitHub's default branch is still `feat/bootstrap`,
+   and Copilot's PR #2 was merged into it, not into `main`. That put commit `b863b61` only on `feat/bootstrap`: a small fix
+   to `tests/e2e/site.spec.js` that also stubs `navigator.userAgentData` for the OS-detection test. `main` lacks it, so the
+   website test may fail in CI on pull requests from `main`-based branches until it is brought over (a PR from
+   `feat/bootstrap` to `main`, or a cherry-pick). Then set the default branch to `main` (Settings, General) and delete
+   `feat/bootstrap` on origin. My local copy of that branch is already deleted.
 2. **Idle RAM gate.** Keep the pre-warmed popup and amend the 80 MB budget, drop the webview when the popup closes, or
    build the native popup. See `DECISIONS.md`.
 3. **A 999-item measurement** needs a seeded database in `%LOCALAPPDATA%\app.windy.clipboard`. The auto-mode classifier
    refused to let me write there, so I did not. The synthetic database is at `D:\windy-scratch\seeddata`.
 4. **`gh`.** `winget install GitHub.cli` failed on this machine with an empty log.
-5. `origin/copilot/fix-failing-github-actions-job` exists. I have not looked at it.
+5. `origin/copilot/fix-failing-github-actions-job` (Copilot's PR #2, merged into `feat/bootstrap`): I read its diff against
+   `main` and it looks reasonable, but I have not run that test.
 
 ## Not done
 
