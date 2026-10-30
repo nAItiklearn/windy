@@ -331,8 +331,10 @@ fn hide_popup(app: AppHandle, window: WebviewWindow) -> Result<(), String> {
     Ok(())
 }
 
+/// Async on purpose: a sync command runs on the main thread, and creating a window there on Windows
+/// leaves the new webview stuck on about:blank.
 #[tauri::command]
-fn open_settings_window(app: AppHandle, window: WebviewWindow) -> Result<(), String> {
+async fn open_settings_window(app: AppHandle, window: WebviewWindow) -> Result<(), String> {
     guard(&window)?;
     open_settings(&app);
     Ok(())
