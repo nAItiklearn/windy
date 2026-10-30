@@ -1,0 +1,8 @@
+{
+  "repo": "nAItiklearn/windy",
+  "assets": {
+    "windows": { "label": "Windows", "file": "Windy-windows-x64-setup.exe" },
+    "macos": { "label": "macOS", "file": "Windy-macos-universal.dmg" },
+    "linux": { "label": "Linux", "file": "Windy-linux-x64.AppImage" }
+  }
+}

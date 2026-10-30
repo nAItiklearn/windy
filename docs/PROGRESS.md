@@ -2,7 +2,13 @@
 
 Last updated: 2026-10-30. Branch: `feat/bootstrap` (local only, nothing pushed).
 
-## Done (with evidence)
+## Update (later on 2026-10-30)
+- Toolchain: `stable-x86_64-pc-windows-gnu`, rustc 1.99.1, WinLibs gcc reports `x86_64-w64-mingw32`; a tiny `cargo build` ran with `CARGO_TARGET_DIR=D:\windy-target`. See `docs/DECISIONS.md`. This supersedes blocker 1 below.
+- `crates/windy-core` written (types, settings, title, search, sorter, action, clipboard pipeline, history, SQLite storage). `cargo test -p windy-core`: **78 passed, 0 failed**. `cargo clippy --all-targets -- -D warnings`: clean. `cargo fmt --all` applied; the final `--check` and a re-run of the tests after the clippy fix were not completed (shell rejected the command).
+- Not done yet: committing (shell rejected `git`), `windy-platform`, Tauri shell, UI, Playwright, security review, measurements, website, CI/release files.
+- Still-open mapping of Maccy tests to Rust tests (`docs/TEST-MATRIX.md`) is not written. Not ported on purpose: the `x.nspasteboard.ModifiedType` shortcut (macOS-only), OCR titles.
+
+## Done earlier (with evidence)
 - Repo initialised locally, `.gitignore` (`.env`, `target/`, `node_modules/`, `reference/`), `.env.example` with empty Snowflake variables.
 - Reference screenshots moved to `reference/` (gitignored, never committed).
 - Maccy cloned shallow to `D:\windy-scratch\Maccy` (outside the repo). Read: Clipboard, Search, History, HistoryItem, HistoryItemDecorator, Storage, Sorter, PopupPosition, Popup, FloatingPanel, KeyChord, HistoryItemAction, AppState, Footer, AppDelegate, all settings panes, pasteboard type constants, Defaults keys, test names.

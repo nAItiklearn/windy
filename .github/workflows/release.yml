@@ -1,0 +1,90 @@
+name: release
+
+# Builds installers on every manual run (artifacts only). A GitHub Release is created only when a
+# version tag (v*) is pushed. Nothing here deploys the website.
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+env:
+  NO_STRIP: "true"
+
+jobs:
+  build:
+    name: build (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows
+            os: windows-latest
+            args: "--bundles nsis"
+          - name: macos
+            os: macos-latest
+            args: "--target universal-apple-darwin --bundles dmg"
+          - name: linux
+            os: ubuntu-22.04
+            args: "--bundles appimage,deb"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.name == 'macos' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Linux dependencies
+        if: matrix.name == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev libssl-dev libxcb-shape0-dev libxcb-xfixes0-dev
+      - name: Build installers
+        shell: bash
+        run: npx --yes @tauri-apps/cli@2 build ${{ matrix.args }}
+      - name: Give files version-free names
+        shell: bash
+        run: |
+          mkdir -p dist-release
+          b=target
+          [ "${{ matrix.name }}" = macos ] && b=target/universal-apple-darwin
+          pick() { find "$b/release/bundle" -type f -name "$1" | head -n 1; }
+          case "${{ matrix.name }}" in
+            windows) cp "$(pick '*-setup.exe')" dist-release/Windy-windows-x64-setup.exe ;;
+            macos)   cp "$(pick '*.dmg')"       dist-release/Windy-macos-universal.dmg ;;
+            linux)
+              cp "$(pick '*.AppImage')" dist-release/Windy-linux-x64.AppImage
+              cp "$(pick '*.deb')"      dist-release/Windy-linux-x64.deb ;;
+          esac
+          ls -la dist-release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windy-${{ matrix.name }}
+          path: dist-release/*
+          if-no-files-found: error
+
+  publish:
+    name: publish release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: assets
+          merge-multiple: true
+      - name: Checksums
+        run: cd assets && sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" assets/* \
+            --repo "${{ github.repository }}" \
+            --title "Windy ${{ github.ref_name }}" \
+            --generate-notes

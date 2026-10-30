@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windy</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="popup">
+  <div class="head">
+    <span class="title">Windy</span>
+    <input id="q" type="search" placeholder="Search" aria-label="Search clipboard history" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="viewport" id="viewport">
+    <div class="spacer" id="spacer" role="listbox" aria-label="Clipboard history"></div>
+  </div>
+  <div class="foot" id="foot">
+    <span class="status" id="status" role="status" aria-live="polite"></span>
+    <button class="link" id="clear" type="button">Clear</button>
+    <button class="link" id="clear-all" type="button">Clear all</button>
+    <button class="link" id="open-settings" type="button">Settings</button>
+    <button class="link" id="quit" type="button">Quit</button>
+  </div>
+</div>
+<script type="module" src="popup.js"></script>
+</body>
+</html>

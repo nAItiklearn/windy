@@ -1,0 +1,6 @@
+{
+  "identifier": "default",
+  "description": "Event access for the popup and settings windows. App commands are checked by window label in Rust.",
+  "windows": ["popup", "settings"],
+  "permissions": ["core:event:default"]
+}

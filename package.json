@@ -1,0 +1,15 @@
+{
+  "name": "windy",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Windy dev tooling: demo-mode UI and website tests",
+  "scripts": {
+    "demo": "node scripts/serve.mjs ui 4173",
+    "site": "node scripts/serve.mjs site 4174",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

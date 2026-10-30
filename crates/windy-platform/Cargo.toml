@@ -1,0 +1,22 @@
+[package]
+name = "windy-platform"
+description = "Windy per-OS integration: clipboard, paste injection, foreground app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+windy-core = { path = "../windy-core" }
+arboard = { version = "3", default-features = false, features = ["image-data"] }
+enigo = "0.3"
+png = "0.17"
+thiserror = "1"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+  "Win32_Foundation",
+  "Win32_System_DataExchange",
+  "Win32_System_Threading",
+  "Win32_UI_WindowsAndMessaging",
+] }

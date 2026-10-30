@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windy: a calm clipboard history for Windows, macOS and Linux</title>
+<meta name="description" content="Windy keeps your clipboard history one shortcut away. Free, open source, fast, private. Windows, macOS and Linux.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <a class="brand" href="#top" id="top">Windy</a>
+  <nav aria-label="Primary">
+    <a href="#try">Try it</a>
+    <a href="#download">Download</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <h1>Everything you copied,<br>one shortcut away.</h1>
+    <p class="lede">Windy is a small, quiet clipboard history. Press a shortcut, search, press Enter. It stays on your device and never phones home.</p>
+    <p class="cta">
+      <a class="button" id="primary-download" href="#download">Download</a>
+      <span class="muted" id="primary-note">Free and open source</span>
+    </p>
+  </section>
+
+  <section id="try" class="demo-section" aria-labelledby="try-h">
+    <h2 id="try-h">Try it right here</h2>
+    <p class="muted">This is the real layout. Type to search, use <kbd>↑</kbd> <kbd>↓</kbd>, press <kbd>Enter</kbd> to copy, <kbd>Alt</kbd>+<kbd>P</kbd> to pin.</p>
+    <div class="popup" role="application" aria-label="Windy popup demo">
+      <div class="popup-head">
+        <span class="popup-title">Windy</span>
+        <input id="demo-search" type="search" placeholder="Search" aria-label="Search history" autocomplete="off">
+      </div>
+      <ul id="demo-list" role="listbox" aria-label="Clipboard history"></ul>
+      <div class="popup-foot">
+        <span id="demo-status" role="status" aria-live="polite">Ready</span>
+        <span class="muted">Clear · Settings</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="points" aria-label="Highlights">
+    <div><h3>Fast</h3><p>Opens instantly and searches as you type, even with a thousand items.</p></div>
+    <div><h3>Private</h3><p>Everything is stored locally. Password managers and chosen apps are ignored.</p></div>
+    <div><h3>Native feel</h3><p>Follows your system theme, accent colour and keyboard habits.</p></div>
+    <div><h3>Open source</h3><p>MIT licensed. Inspired by the Mac app Maccy, written independently.</p></div>
+  </section>
+
+  <section id="download" aria-labelledby="dl-h">
+    <h2 id="dl-h">Download</h2>
+    <p class="muted" id="dl-detected">Pick your system.</p>
+    <div class="downloads" id="downloads">
+      <a class="card" data-os="windows" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>Windows</strong><span>Installer (.exe), Windows 10 and 11</span></a>
+      <a class="card" data-os="macos" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>macOS</strong><span>Disk image (.dmg), 12 or newer</span></a>
+      <a class="card" data-os="linux" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>Linux</strong><span>AppImage, x86-64</span></a>
+    </div>
+    <p class="muted small">File names never contain a version, so these links always give you the latest release. Checksums are listed on the <a href="https://github.com/nAItiklearn/windy/releases/latest">release page</a>.</p>
+  </section>
+
+  <section id="faq" aria-labelledby="faq-h">
+    <h2 id="faq-h">Questions</h2>
+    <details><summary>Does Windy send my clipboard anywhere?</summary><p>No. History lives in a local database on your device. Windy makes no network requests while running.</p></details>
+    <details><summary>Will it record my passwords?</summary><p>Windy skips copies that password managers mark as sensitive, and you can ignore any app or any pattern you like in Settings.</p></details>
+    <details><summary>Is it the same as Maccy?</summary><p>No. Maccy is a macOS app. Windy follows the same simple behaviour but is a separate project that runs on Windows, macOS and Linux.</p></details>
+    <details><summary>Does it work on Linux Wayland?</summary><p>Clipboard history needs compositor support. It works on X11 and on Wayland desktops that provide the data-control protocol (such as KDE and wlroots-based ones). GNOME on Wayland has limits, documented in the project README.</p></details>
+    <details><summary>The installer says the publisher is unknown.</summary><p>Early builds are not code-signed, so Windows SmartScreen and macOS Gatekeeper warn you. The source and checksums are public so you can verify what you run.</p></details>
+    <details><summary>How much does it cost?</summary><p>Nothing. It is MIT licensed.</p></details>
+  </section>
+
+  <section id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Contact</h2>
+    <p>Questions, bugs and ideas are welcome on <a href="https://github.com/nAItiklearn/windy/issues">GitHub Issues</a>. Security reports: see <a href="https://github.com/nAItiklearn/windy/security/policy">the security policy</a>.</p>
+  </section>
+</main>
+
+<footer>
+  <p>Windy is MIT licensed. It credits <a href="https://github.com/p0deje/Maccy">Maccy</a> (MIT) for the behaviour it follows. <a href="https://github.com/nAItiklearn/windy">Source</a></p>
+</footer>
+<script src="app.js" defer></script>
+</body>
+</html>

@@ -6,3 +6,10 @@ node_modules/
 target/
 dist/
 *.log
+test-results/
+playwright-report/
+src-tauri/gen/
+src-tauri/icons/android/
+src-tauri/icons/ios/
+*.sqlite
+*.sqlite-*
