@@ -1,7 +1,7 @@
 # Windy progress
 
-Last updated: 2026-10-30, against `main` at `0a864a1`. `main` is GitHub's default branch. `feat/bootstrap` is deleted.
-No tag, release, deploy or installer exists.
+Last updated: 2026-10-30, against `main` at `e5c7c2a`. `main` is GitHub's default branch. `feat/bootstrap` is deleted.
+**v0.1.0 is tagged and published** (tag at `465f032`, Release published 13:04 UTC). The website is not deployed.
 
 ## Verified, and where the evidence is
 
@@ -14,7 +14,9 @@ No tag, release, deploy or installer exists.
 | Page loads | The WebView2 debug probe shows both pages loading with no failed requests and no console errors (after the favicon fix) |
 | Website, local | Lighthouse 100 on all four categories, desktop and mobile; LCP 223 ms, CLS 0.00 (`PERF.md`) |
 | Dependencies | `cargo audit`: no vulnerabilities, 5 transitive warnings; `npm audit`: 0 (`SECURITY-REVIEW.md`) |
-| CI | Read from the public GitHub API on 2026-10-30: `ci.yml` succeeded on `001a62e` and `ad578f7`. Confirm the latest run yourself |
+| CI | Read from the public GitHub API on 2026-10-30: `ci.yml` succeeded on `0a864a1` (all six jobs), on `465f032` (the tagged commit) and on `main` at `e5c7c2a` |
+| Release | The dry run (`workflow_dispatch` on `0a864a1`) and the `v0.1.0` tag run both succeeded. The Release holds the four installers and `SHA256SUMS.txt`; the checksums in that file match GitHub's own digests of the hosted files (I did not hash the downloaded bytes myself). The site's three `releases/latest/download/...` links resolve |
+| Windows installer | The owner installed the dry-run artifact: it installed cleanly, launched and worked normally (owner-reported, not independently observed) |
 
 ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB; the owner raised the budget from 80 MB to **120 MB**
 (`DECISIONS.md`, dated note in `ADR-001-stack.md`). The headroom is small.
@@ -35,9 +37,17 @@ ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB; the owner 
   the accent colour is fixed, not the system's. "No network requests" is stated as by design and based on code review, not a
   packet capture. The password-manager exclusion and app ignoring are marked Windows-only. Generic adjectives ("fast, private")
   remain in the page meta description and the bundle description.
-- **Installers**: `release.yml` has never been run. The NSIS, DMG, AppImage and deb outputs, the version-free renaming step,
-  and the macOS universal build are unverified. All local builds use the GNU/MinGW toolchain (linker warning: `.rsrc merge
-  failure: multiple non-default manifests`); the installers will use MSVC on `windows-latest`.
+- **Installers**: only the Windows installer has been installed and run (by the owner, from the dry-run artifact). The macOS
+  `.dmg`, the Linux AppImage and the `.deb` were built and published, but nobody has installed or run them. All local builds
+  use the GNU/MinGW toolchain (linker warning: `.rsrc merge failure: multiple non-default manifests`); the published installers
+  come from the MSVC build on `windows-latest`. They are unsigned.
+- **The v0.1.0 Release page**: its notes are auto-generated (a list of pull requests, some titled just "fix") and carry none of
+  the caveats the site and README now carry. The tag points at `465f032`; `main` has since changed only `README.md`,
+  `site/index.html` and `docs/PROGRESS.md`, so the app code is identical, but the Release's source archives contain the README
+  from before the claims were softened.
+- **Third-party license notices** are not bundled with the installers. `NOTICE` tells readers to run `cargo about`. MIT and
+  Apache-2.0 dependencies ask that their notices accompany binary distributions, and the usual practice is to ship a generated
+  third-party licenses file. This is not legal advice.
 - **Performance**: a first data point on one machine with an empty history. Search keystroke latency and any populated
   history are unmeasured; the app caps history at 999 items, so the ADR's 10,000-item condition cannot occur.
 - **Security** (`SECURITY-REVIEW.md`, written with the author's own tooling, not an independent audit): no encryption at rest,
@@ -49,14 +59,15 @@ ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB; the owner 
 
 ## Only the owner can do these
 
-1. **Confirm CI** on the latest `main` run has finished green.
-2. **Dry-run the release workflow**: Actions, "release", Run workflow on `main`. A manual run builds the installers as
-   artifacts only and creates no Release. Install and try them, including on a Mac and a Linux machine.
-3. **Tag and publish**: `git tag v0.1.0` then `git push origin v0.1.0`. A `v*` tag runs the `publish` job, which creates the
-   GitHub Release with `SHA256SUMS.txt`. Check that repo Actions settings allow the workflow its `contents: write`
-   permission. The site's download links use `releases/latest`, which only resolves once a release exists.
+1. **Edit the v0.1.0 Release notes** (only you can; I have no write access to GitHub). Suggested content: the builds are
+   unsigned so SmartScreen and Gatekeeper warn; the app has been developed and tested on Windows 11 only; Windows 10, macOS and
+   Linux are unverified; Linux is X11 and XWayland only; the password-manager exclusion and app ignoring are Windows-only.
+2. **Decide whether the tag stays on `465f032`.** For the app it makes no difference. Moving it means deleting a published
+   tag and Release, which should only happen on your say-so.
+3. **Install the macOS and Linux assets, or say plainly that they are untested.** They are published next to the tested
+   Windows one.
 4. **Deploy the website**: connect the repository to a host (the config is `vercel.json` with `outputDirectory: site`) and set
-   the domain. Nothing deploys automatically.
+   the domain. Nothing deploys automatically. The download links already work.
 5. **Contact**: there is no email address anywhere. The site and `SECURITY.md` point to GitHub Issues and GitHub's private
    vulnerability reporting. Decide whether to add an email, and enable private vulnerability reporting in the repository's
    security settings, otherwise the `SECURITY.md` link does not work.
@@ -65,7 +76,8 @@ ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB; the owner 
 7. **Test on hardware I do not have**: Windows 10, macOS, Linux on X11 and on Wayland.
 8. **Remove the caveats only after the testing**: take "should work, not yet verified" off Windows 10 and macOS 12, and lift the
    Linux and password-manager caveats, once each has been tested on real hardware. Native Wayland support is not promised.
-9. **Open decisions**: encryption at rest in v1; a per-app paste key; the ADR gate's 10,000-item wording; which Linux distros to cover.
+9. **Open decisions**: encryption at rest in v1; a per-app paste key; the ADR gate's 10,000-item wording; which Linux distros to
+   cover; whether to ship third-party license notices with the installers.
 10. **Optional**: delete the merged branches on origin (`copilot/fix-failing-github-actions-job`, `docs/perf-and-screenshots`,
     `docs/ram-decision-and-perf-harness`, `feat/security-audit`, `fix/clear-shortcut`, `fix/favicon-500`,
     `fix/settings-window-blank`); run the 999-item measurement by copying the `tools/seed` output into the app data folder
