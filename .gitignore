@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+reference/
+node_modules/
+target/
+dist/
+*.log
