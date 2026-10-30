@@ -18,7 +18,10 @@ test("download cards point at version-free release assets", async ({ page }) => 
 });
 
 test("the primary button matches the visitor's OS", async ({ page }) => {
-  await page.addInitScript(() => Object.defineProperty(navigator, "platform", { get: () => "Win32" }));
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "platform", { configurable: true, get: () => "Win32" });
+    Object.defineProperty(navigator, "userAgentData", { configurable: true, get: () => ({ platform: "Windows" }) });
+  });
   await page.goto(SITE);
   await expect(page.locator("#primary-download")).toHaveText("Download for Windows");
   await expect(page.locator("#primary-download")).toHaveAttribute("href", /Windy-windows-x64-setup\.exe$/);
