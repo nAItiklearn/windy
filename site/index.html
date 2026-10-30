@@ -24,7 +24,7 @@
 <main id="main">
   <section class="hero">
     <h1>Everything you copied,<br>one shortcut away.</h1>
-    <p class="lede">Windy is a small, quiet clipboard history. Press a shortcut, search, press Enter. It stays on your device and never phones home.</p>
+    <p class="lede">Windy is a small, quiet clipboard history. Press a shortcut, search, press Enter. It stays on your device and, by design, never phones home (based on code review).</p>
     <p class="cta">
       <a class="button" id="primary-download" href="#download">Download</a>
       <span class="muted" id="primary-note">Free and open source</span>
@@ -48,9 +48,9 @@
   </section>
 
   <section class="points" aria-label="Highlights">
-    <div><h3>Fast</h3><p>Opens instantly and searches as you type, even with a thousand items.</p></div>
-    <div><h3>Private</h3><p>Everything is stored locally. Password managers and chosen apps are ignored.</p></div>
-    <div><h3>Native feel</h3><p>Follows your system theme, accent colour and keyboard habits.</p></div>
+    <div><h3>Fast</h3><p>Opens in about 20 ms on our test machine with an empty history, and searches as you type. Speed with a full history has not been measured yet.</p></div>
+    <div><h3>Private</h3><p>Everything is stored locally. On Windows, copies that password managers mark as sensitive are skipped and you can ignore chosen apps. Neither is implemented on macOS or Linux yet.</p></div>
+    <div><h3>Native feel</h3><p>Follows your system's light or dark setting (checked in dark mode only so far). The accent colour is fixed, not taken from your system.</p></div>
     <div><h3>Open source</h3><p>MIT licensed. Inspired by the Mac app Maccy, written independently.</p></div>
   </section>
 
@@ -67,8 +67,8 @@
 
   <section id="faq" aria-labelledby="faq-h">
     <h2 id="faq-h">Questions</h2>
-    <details><summary>Does Windy send my clipboard anywhere?</summary><p>No. History lives in a local database on your device. Windy makes no network requests while running.</p></details>
-    <details><summary>Will it record my passwords?</summary><p>Windy skips copies that password managers mark as sensitive, and you can ignore any app or any pattern you like in Settings.</p></details>
+    <details><summary>Does Windy send my clipboard anywhere?</summary><p>By design, no. History lives in a local database on your device, and Windy's own code makes no network requests. That is based on code review, not a packet capture, and the system webview that draws the windows is a separate component.</p></details>
+    <details><summary>Will it record my passwords?</summary><p>On Windows, Windy skips copies that password managers mark as sensitive, and you can ignore chosen apps in Settings. Both are Windows-only in v0.1 and not yet implemented on macOS or Linux, where a copied password can be recorded. You can also add ignore patterns in Settings.</p></details>
     <details><summary>Is it the same as Maccy?</summary><p>No. Maccy is a macOS app. Windy follows the same simple behaviour but is a separate project that runs on Windows, macOS and Linux.</p></details>
     <details><summary>Does it work on Linux Wayland?</summary><p>Not natively yet. Linux support in v0.1 is X11, including XWayland on Wayland desktops. Native Wayland is a known limitation of this version, so clipboard history, global shortcuts and popup placement on Wayland sessions may not work. The Linux build has not yet been run on real hardware, so treat Linux as unverified. Details are in the project README.</p></details>
     <details><summary>The installer says the publisher is unknown.</summary><p>Early builds are not code-signed, so Windows SmartScreen and macOS Gatekeeper warn you. The source and checksums are public so you can verify what you run.</p></details>

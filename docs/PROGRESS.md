@@ -28,9 +28,13 @@ ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB; the owner 
   version of this file wrongly said the tray and delete had been checked.
 - **Platforms**: only Windows 11 (build 26300) has run the app. macOS and Linux are compiled in CI and nothing more. Windows 10
   is untested. Linux is X11 and XWayland only. macOS and Linux report no foreground app, so app-based ignore rules do nothing there.
-- **Website claims that nothing has tested**: Windows 10, macOS 12 or newer, and the FAQ's statement that Wayland works with
-  the data-control protocol (`DECISIONS.md` says v0.1 Linux is X11 and XWayland only). "Makes no network requests" rests on
-  code review and having no updater, not on a packet capture.
+- **Website and README claims are now labelled for what is unverified.** Windows 10 and macOS 12 or newer say "should work, not
+  yet verified". Linux says X11 and XWayland; the old FAQ claim of Wayland data-control support contradicted `DECISIONS.md` and
+  is gone (native Wayland is a known limitation, with no date promised). Speed is stated as about 20 ms with an empty history,
+  and unmeasured with a full one. The theme claim is limited to the system light/dark setting (seen in dark mode only), and says
+  the accent colour is fixed, not the system's. "No network requests" is stated as by design and based on code review, not a
+  packet capture. The password-manager exclusion and app ignoring are marked Windows-only. Generic adjectives ("fast, private")
+  remain in the page meta description and the bundle description.
 - **Installers**: `release.yml` has never been run. The NSIS, DMG, AppImage and deb outputs, the version-free renaming step,
   and the macOS universal build are unverified. All local builds use the GNU/MinGW toolchain (linker warning: `.rsrc merge
   failure: multiple non-default manifests`); the installers will use MSVC on `windows-latest`.
@@ -59,7 +63,8 @@ ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB; the owner 
 6. **Code signing**: a Windows code-signing certificate, and an Apple Developer ID with notarization for macOS. Add the secrets
    to the repository. `release.yml` has no signing step today, so builds are unsigned and SmartScreen and Gatekeeper will warn.
 7. **Test on hardware I do not have**: Windows 10, macOS, Linux on X11 and on Wayland.
-8. **Decide what the site may claim** (Wayland, Windows 10, macOS 12) until those platforms are tested.
+8. **Remove the caveats only after the testing**: take "should work, not yet verified" off Windows 10 and macOS 12, and lift the
+   Linux and password-manager caveats, once each has been tested on real hardware. Native Wayland support is not promised.
 9. **Open decisions**: encryption at rest in v1; a per-app paste key; the ADR gate's 10,000-item wording; which Linux distros to cover.
 10. **Optional**: delete the merged branches on origin (`copilot/fix-failing-github-actions-job`, `docs/perf-and-screenshots`,
     `docs/ram-decision-and-perf-harness`, `feat/security-audit`, `fix/clear-shortcut`, `fix/favicon-500`,
