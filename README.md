@@ -1,7 +1,8 @@
 # Windy
 
 A calm clipboard history for Windows, macOS and Linux. Press a shortcut, search, press Enter.
-Everything stays on your device: no accounts, no telemetry, no network calls.
+Everything stays on your device: no accounts, no telemetry and, by design, no network calls (based on code review,
+not a packet capture).
 
 Windy follows the behaviour of [Maccy](https://github.com/p0deje/Maccy) (macOS, MIT) but is an independent
 project; see `NOTICE`.
@@ -26,8 +27,9 @@ macOS Gatekeeper will warn on first launch.
 - **Search** by typing. Modes: exact, fuzzy, regular expression, mixed.
 - `Enter` copies. `Alt+Enter` pastes. `Alt+Shift+Enter` pastes without formatting. `Ctrl+1`..`9` picks by number.
 - `Alt+P` pins, `Alt+Backspace` deletes, `Esc` closes. `Ctrl+,` opens Settings.
-- Copies marked sensitive by password managers (Windows `ExcludeClipboardContentFromMonitorProcessing`) are never stored.
-  You can also ignore applications and regular expressions.
+- On Windows, copies marked sensitive by password managers (`ExcludeClipboardContentFromMonitorProcessing`) are skipped,
+  and you can ignore applications. Both are Windows-only in v0.1 and not yet implemented on macOS or Linux, where such
+  copies can be recorded. You can also ignore regular expressions.
 
 ## Limits you should know
 
