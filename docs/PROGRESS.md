@@ -41,8 +41,10 @@ merged and can be deleted.
 2. **A 999-item measurement** needs the seeded database copied into `%LOCALAPPDATA%\app.windy.clipboard`, which replaces any
    real history there. The auto-mode classifier refused to let me write there, and the README explains the manual steps.
 3. **`gh`.** `winget install GitHub.cli` failed on this machine with an empty log.
-4. One `Failed to load resource: ... 500` console message appears when the settings page is reloaded. I did not identify the
-   resource (possibly the implicit favicon request) and did not investigate.
+4. **Merge `fix/favicon-500`.** The `500` logged when a page loads was the implicit `GET /favicon.ico`. Neither page declared an
+   icon, and Tauri answers any path it cannot find with a 500 because `ui/` has no `index.html`. It happened on the release
+   build too (not dev-only), on both the popup and settings pages, and had no user-visible effect. The branch adds an inline
+   `<link rel="icon" href="data:,">` to both pages; the probe shows no favicon request and no console error afterwards.
 
 ## Not done
 

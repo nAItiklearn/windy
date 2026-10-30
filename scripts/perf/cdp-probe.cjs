@@ -20,12 +20,20 @@ const { chromium } = require("playwright-core");
         }));
       } catch (e) { entry.evalError = String(e.message).slice(0, 200); }
 
-      if (/settings\.html/.test(entry.url)) {
+      if (/(settings|popup)\.html/.test(entry.url)) {
+        // Chromium's Log and Network domains carry the URL that a plain console message lacks, so a
+        // "Failed to load resource" line can be traced to the request that caused it.
         const messages = [];
-        page.on("console", (m) => messages.push(`console.${m.type()}: ${m.text()}`.slice(0, 240)));
+        const urls = new Map();
+        const client = await ctx.newCDPSession(page);
+        await client.send("Network.enable");
+        await client.send("Log.enable");
+        client.on("Log.entryAdded", ({ entry: e }) => messages.push(`log.${e.source}.${e.level}: ${e.text}${e.url ? ` [${e.url}]` : ""}`.slice(0, 300)));
+        client.on("Network.requestWillBeSent", (p) => urls.set(p.requestId, `${p.request.method} ${p.request.url}`));
+        client.on("Network.responseReceived", (p) => { if (p.response.status >= 400) messages.push(`network ${p.response.status} (${p.type}): ${p.response.url}`); });
+        client.on("Network.loadingFailed", (p) => messages.push(`network failed (${p.type}): ${p.errorText} ${urls.get(p.requestId) || ""}`));
+        page.on("console", (m) => { const l = m.location(); messages.push(`console.${m.type()}: ${m.text()}${l && l.url ? ` [${l.url}:${l.lineNumber}]` : ""}`.slice(0, 300)); });
         page.on("pageerror", (e) => messages.push(`pageerror: ${String(e.message).slice(0, 240)}`));
-        page.on("requestfailed", (r) => messages.push(`requestfailed: ${r.url()} ${r.failure() && r.failure().errorText}`));
-        page.on("response", (r) => { if (r.status() >= 400) messages.push(`http ${r.status()}: ${r.url()}`); });
         try {
           entry.invokeGetSettings = await page.evaluate(async () => {
             try { const s = await window.__TAURI__.core.invoke("get_settings"); return "ok, keys=" + Object.keys(s).length; }
@@ -35,6 +43,7 @@ const { chromium } = require("playwright-core");
         try { await page.reload({ waitUntil: "load", timeout: 8000 }); } catch (e) { messages.push("reload: " + String(e.message).slice(0, 160)); }
         await new Promise((r) => setTimeout(r, 2500));
         try { entry.afterReloadBodyText = await page.evaluate(() => document.body.innerText.slice(0, 200)); } catch (e) { entry.afterReloadError = String(e.message).slice(0, 160); }
+        entry.requestsSeen = [...urls.values()].slice(0, 40);
         entry.events = messages;
       }
       report.push(entry);
