@@ -1,0 +1,13 @@
+[package]
+name = "windy-seed"
+version = "0.0.0"
+edition = "2021"
+publish = false
+description = "Dev tool: writes a synthetic history.sqlite and settings.json for measurements and screenshots"
+
+[dependencies]
+windy-core = { path = "../../crates/windy-core" }
+serde_json = "1"
+
+# Its own workspace root: this tool is not part of the app workspace or CI.
+[workspace]

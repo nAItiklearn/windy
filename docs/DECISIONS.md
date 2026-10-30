@@ -39,10 +39,17 @@ Short, dated records of project decisions. Architecture-level decisions live in 
 **Result** (method and caveats in `PERF.md`). On the dev machine, release build, empty history:
 - Popup after the hotkey: window visible median 2.4 ms, first painted pixel median 18.3 ms (budget 50 ms). Pass.
 - Idle CPU: 0.15% of one core. Pass.
-- Idle RAM, all app processes: 103.4 MB private working set (budget 80 MB). **Fail.** The Rust process is 3.7 MB; the six
-  WebView2 processes behind the pre-warmed popup are about 99.7 MB.
+- Idle RAM, all app processes: 103.4 MB private working set. **Fail** against the original 80 MB budget; passes the 120 MB
+  budget adopted below. The Rust process is 3.7 MB; the six WebView2 processes behind the pre-warmed popup are about 99.7 MB.
 - Not measured: search keystroke to paint (16 ms), and any populated history. `history_size` is capped at 999, so the
   ADR's 10,000-item condition cannot occur in the product.
 
-**Decision still open.** Keep the pre-warmed popup and amend the RAM budget; drop the webview when the popup closes
-(small RAM, but each open pays a webview start-up); or build the native popup the ADR names as its fallback.
+**Decision (2026-10-30, project owner).** Keep the pre-warmed popup and raise the idle-RAM budget from 80 MB to **120 MB**
+(private working set, all app processes). Measured 103.4 MB at idle and 113.2 MB after 30 open/close cycles, so it passes the
+amended budget with little headroom. `ADR-001-stack.md` carries a dated amendment.
+
+Not chosen: dropping the webview when the popup closes (each open would pay a webview start-up, which would put the 50 ms
+popup budget at risk; that cost is inferred from the start-up runs, not measured), and the native popup fallback.
+
+Caveat: 120 MB is set from one Windows machine. The webview runtimes on macOS and Linux differ, so check it there before
+treating it as a cross-platform figure.

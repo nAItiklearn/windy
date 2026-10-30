@@ -38,6 +38,11 @@ popup visible < 50 ms after the hotkey, search keystroke to painted result < 16 
 If risks 1 and 2 cannot both be met with a webview, this ADR is superseded by "native popup + Rust core". `windy-core` and `windy-platform` are reused unchanged
 and only the UI layer changes. That is why the core never depends on Tauri.
 
+**Amended 2026-10-30.** The first measurement (`PERF.md`) met the popup and CPU budgets and exceeded the original idle-RAM budget
+(103.4 MB against 80 MB), with 99.7 MB of that in the WebView2 processes behind the pre-warmed popup. The project owner chose to keep the
+pre-warmed popup and raise the idle-RAM budget to **120 MB** (private working set, all app processes) instead of superseding this ADR.
+The other gate figures are unchanged. See `DECISIONS.md`.
+
 ## Security baseline
 
 - Strict CSP: `default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src ipc: http://ipc.localhost`. No remote content, no `eval`, no inline script.
