@@ -48,6 +48,8 @@ test("the shortcuts graphic loads, is described, and reserves its space", async 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(SITE);
   const img = page.locator(".callouts img");
+  // The graphic is lazy-loaded below the fold, so bring it into view first.
+  await img.scrollIntoViewIfNeeded();
   await expect(img).toBeVisible();
   await expect(img).toHaveAttribute("alt", /Alt\+P pins a row/);
   await expect(img).toHaveAttribute("width", "1200");
@@ -60,6 +62,11 @@ test("the shortcuts graphic is hidden on phones and the page does not scroll sid
   await page.goto(SITE);
   await expect(page.locator(".callouts")).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  // overflow:hidden on a section can mask clipping, so also check that key blocks fit on screen.
+  const clipped = await page.$$eval(".hero-copy, #primary-download, .popup, .card, .cta-band", (els) =>
+    els.filter((el) => el.getBoundingClientRect().right > window.innerWidth + 1).map((el) => el.className || el.id),
+  );
+  expect(clipped).toEqual([]);
 });
 
 test("no console errors on load", async ({ page }) => {
