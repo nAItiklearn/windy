@@ -1,7 +1,8 @@
 # Windy progress
 
 Last updated: 2026-10-30, against `main` at `e5c7c2a`. `main` is GitHub's default branch. `feat/bootstrap` is deleted.
-**v0.1.0 is tagged and published** (tag at `465f032`, Release published 13:04 UTC). The website is not deployed.
+**v0.1.0 is tagged and published** (tag at `465f032`, Release published 13:04 UTC). The website is
+deployed to production at <https://windy-beryl.vercel.app> (Vercel project `naitiklearns-projects/windy`).
 
 ## Verified, and where the evidence is
 
@@ -66,8 +67,10 @@ ADR-001 gate: popup latency and idle CPU pass. Idle RAM was 103.4 MB; the owner 
    tag and Release, which should only happen on your say-so.
 3. **Install the macOS and Linux assets, or say plainly that they are untested.** They are published next to the tested
    Windows one.
-4. **Deploy the website**: connect the repository to a host (the config is `vercel.json` with `outputDirectory: site`) and set
-   the domain. Nothing deploys automatically. The download links already work.
+4. **Domain and Vercel settings**: the site is live on the `windy-beryl.vercel.app` alias (the plain `windy.vercel.app` name was
+   taken). Choose a custom domain in the Vercel project settings if you want one. The Vercel project is connected to this
+   GitHub repository, so every push to `main` redeploys production and other branches get previews that sit behind a Vercel
+   login. Disconnect it under the project's Git settings if you do not want that. The download links work.
 5. **Contact**: there is no email address anywhere. The site and `SECURITY.md` point to GitHub Issues and GitHub's private
    vulnerability reporting. Decide whether to add an email, and enable private vulnerability reporting in the repository's
    security settings, otherwise the `SECURITY.md` link does not work.
