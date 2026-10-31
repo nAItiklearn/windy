@@ -6,86 +6,313 @@
 <title>Windy: a calm clipboard history for Windows, macOS and Linux</title>
 <meta name="description" content="Windy keeps your clipboard history one shortcut away. Free, open source, fast, private. Windows, macOS and Linux.">
 <meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Windy: everything you copied, one shortcut away">
+<meta property="og:description" content="A small, quiet clipboard history. Free and open source.">
+<meta property="og:image" content="img/social-preview.png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="top">
-  <a class="brand" href="#top" id="top">Windy</a>
-  <nav aria-label="Primary">
-    <a href="#try">Try it</a>
-    <a href="#download">Download</a>
-    <a href="#faq">FAQ</a>
-    <a href="#contact">Contact</a>
-  </nav>
+
+<header class="top" id="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#top"><img src="favicon.svg" width="24" height="24" alt=""> Windy</a>
+    <nav aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#shortcuts">Shortcuts</a>
+      <a href="#download">Download</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="top-actions">
+      <a class="ghost" href="https://github.com/nAItiklearn/windy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.330-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.750 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" fill="currentColor"/></svg><span>Source</span></a>
+      <a class="button small-btn" href="#download">Download</a>
+    </div>
+  </div>
 </header>
 
 <main id="main">
   <section class="hero">
-    <h1>Everything you copied,<br>one shortcut away.</h1>
-    <p class="lede">Windy is a small, quiet clipboard history. Press a shortcut, search, press Enter. It stays on your device and, by design, never phones home (based on code review).</p>
-    <p class="cta">
-      <a class="button" id="primary-download" href="#download">Download</a>
-      <span class="muted" id="primary-note">Free and open source</span>
-    </p>
-    <figure class="callouts">
-      <img src="img/feature-callouts.svg" width="1200" height="630" loading="lazy" decoding="async" alt="Windy's popup with its main shortcuts. Type to search. Enter copies the selected row and Alt+Enter pastes it. Esc clears the search, then closes. Alt+P pins a row. Ctrl plus 1 to 9 picks one of the first nine rows. Clear all needs two clicks. Windy is open source under the MIT license.">
-    </figure>
-  </section>
-
-  <section id="try" class="demo-section" aria-labelledby="try-h">
-    <h2 id="try-h">Try it right here</h2>
-    <p class="muted">This is the real layout. Type to search, use <kbd>↑</kbd> <kbd>↓</kbd>, press <kbd>Enter</kbd> to copy, <kbd>Alt</kbd>+<kbd>P</kbd> to pin.</p>
-    <div class="popup" role="application" aria-label="Windy popup demo">
-      <div class="popup-head">
-        <span class="popup-title">Windy</span>
-        <input id="demo-search" type="search" placeholder="Search" aria-label="Search history" autocomplete="off">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> v0.1 · free and open source</p>
+        <h1>Everything you copied,<br><span class="grad">one shortcut away.</span></h1>
+        <p class="lede">Windy is a small, quiet clipboard history. Press a shortcut, search, press Enter. It stays on your device and, by design, never phones home (based on code review).</p>
+        <div class="cta">
+          <a class="button" id="primary-download" href="#download">Download</a>
+          <a class="button secondary" href="#try">Try the demo</a>
+        </div>
+        <p class="muted small" id="primary-note">Free and open source</p>
+        <ul class="chips" aria-label="At a glance">
+          <li>No account</li>
+          <li>Stored locally</li>
+          <li>MIT licensed</li>
+          <li>Windows · macOS · Linux</li>
+        </ul>
       </div>
-      <ul id="demo-list" role="listbox" aria-label="Clipboard history"></ul>
-      <div class="popup-foot">
-        <span id="demo-status" role="status" aria-live="polite">Ready</span>
-        <span class="muted">Clear · Settings</span>
+
+      <div class="hero-demo" id="try" aria-labelledby="try-h">
+        <h2 id="try-h" class="sr-only">Try it right here</h2>
+        <div class="glow" aria-hidden="true"></div>
+        <div class="popup" role="application" aria-label="Windy popup demo">
+          <div class="popup-head">
+            <span class="popup-title">Windy</span>
+            <input id="demo-search" type="search" placeholder="Search" aria-label="Search history" autocomplete="off">
+          </div>
+          <ul id="demo-list" role="listbox" aria-label="Clipboard history"></ul>
+          <div class="popup-foot">
+            <span id="demo-status" role="status" aria-live="polite">Ready</span>
+            <span class="muted">Clear · Settings</span>
+          </div>
+        </div>
+        <p class="demo-hint muted small">Live demo. Type to search, <kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to copy, <kbd>Alt</kbd>+<kbd>P</kbd> to pin.</p>
       </div>
     </div>
   </section>
 
-  <section class="points" aria-label="Highlights">
-    <div><h3>Fast</h3><p>Opens in about 20 ms on our test machine with an empty history, and searches as you type. Speed with a full history has not been measured yet.</p></div>
-    <div><h3>Private</h3><p>Everything is stored locally. On Windows, copies that password managers mark as sensitive are skipped and you can ignore chosen apps. Neither is implemented on macOS or Linux yet.</p></div>
-    <div><h3>Native feel</h3><p>Follows your system's light or dark setting (checked in dark mode only so far). The accent colour is fixed, not taken from your system.</p></div>
-    <div><h3>Open source</h3><p>MIT licensed. Inspired by the Mac app Maccy, written independently.</p></div>
+  <section id="how" class="band" aria-labelledby="how-h">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker">How it works</p>
+        <h2 id="how-h">Three keys from copy to paste</h2>
+        <p class="muted">No windows to manage and nothing to configure first. Windy sits in the tray and waits.</p>
+      </header>
+      <ol class="steps">
+        <li class="card step">
+          <span class="num">1</span>
+          <h3>Open</h3>
+          <p>Press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd> (<kbd>Cmd</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd> on macOS) or click the tray icon. You can change the shortcut in Settings.</p>
+        </li>
+        <li class="card step">
+          <span class="num">2</span>
+          <h3>Search</h3>
+          <p>Just start typing. Focus begins in the search box and results filter as you type: exact, fuzzy, regular expression or mixed.</p>
+        </li>
+        <li class="card step">
+          <span class="num">3</span>
+          <h3>Paste</h3>
+          <p><kbd>Enter</kbd> copies the row, <kbd>Alt</kbd>+<kbd>Enter</kbd> pastes it into the app you came from. Or pick a row with <kbd>Ctrl</kbd>+<kbd>1</kbd>…<kbd>9</kbd>.</p>
+        </li>
+      </ol>
+    </div>
   </section>
 
-  <section id="download" aria-labelledby="dl-h">
-    <h2 id="dl-h">Download</h2>
-    <p class="muted" id="dl-detected">Pick your system.</p>
-    <div class="downloads" id="downloads">
-      <a class="card" data-os="windows" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>Windows</strong><span>Installer (.exe). Developed on Windows 11; Windows 10 should work, not yet verified</span></a>
-      <a class="card" data-os="macos" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>macOS</strong><span>Disk image (.dmg). macOS 12 or newer should work, not yet verified</span></a>
-      <a class="card" data-os="linux" href="https://github.com/nAItiklearn/windy/releases/latest"><strong>Linux</strong><span>AppImage, x86-64. X11 and XWayland</span></a>
+  <section id="features" aria-labelledby="feat-h">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker">Features</p>
+        <h2 id="feat-h">Small on purpose</h2>
+        <p class="muted">Windy does one job. Here is what it does today, and where it stops.</p>
+      </header>
+      <div class="features">
+        <article class="card feature">
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></span>
+          <h3>Fast</h3>
+          <p>Opens in about 20 ms on our test machine with an empty history, and searches as you type. Speed with a full history has not been measured yet.</p>
+        </article>
+        <article class="card feature">
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+          <h3>Private</h3>
+          <p>Everything is stored locally. On Windows, copies that password managers mark as sensitive are skipped and you can ignore chosen apps. Neither is implemented on macOS or Linux yet.</p>
+        </article>
+        <article class="card feature">
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+          <h3>Four search modes</h3>
+          <p>Exact, fuzzy, regular expression or mixed. Matches are highlighted in the row so you can see why it was found.</p>
+        </article>
+        <article class="card feature">
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3H7l3-3-1-6Z"/><path d="M12 13v7"/></svg></span>
+          <h3>Pins</h3>
+          <p>Press <kbd>Alt</kbd>+<kbd>P</kbd> to keep a snippet at the top of the list. Press it again to unpin.</p>
+        </article>
+        <article class="card feature">
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor"/></svg></span>
+          <h3>Native feel</h3>
+          <p>Follows your system's light or dark setting (checked in dark mode only so far). The accent colour is fixed, not taken from your system.</p>
+        </article>
+        <article class="card feature">
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></span>
+          <h3>Open source</h3>
+          <p>MIT licensed. Inspired by the Mac app Maccy, written independently. Every line is on <a href="https://github.com/nAItiklearn/windy">GitHub</a>.</p>
+        </article>
+      </div>
     </div>
-    <p class="muted small">File names never contain a version, so these links always give you the latest release. Checksums are listed on the <a href="https://github.com/nAItiklearn/windy/releases/latest">release page</a>.</p>
+  </section>
+
+  <section id="screens" class="band" aria-labelledby="shots-h">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker">Screenshots</p>
+        <h2 id="shots-h">What it looks like</h2>
+        <p class="muted">Real captures of the Windows build, in dark mode.</p>
+      </header>
+      <div class="gallery">
+        <figure class="card shot-card">
+          <div class="shot"><img src="img/shot-history.png" width="581" height="710" loading="lazy" decoding="async" alt="The Windy popup listing ten recent copies, numbered 1 to 9, with the first row selected."></div>
+          <figcaption><strong>Your history</strong><span>The most recent copy is on top. Rows 1 to 9 are numbered for <kbd>Ctrl</kbd>+number.</span></figcaption>
+        </figure>
+        <figure class="card shot-card">
+          <div class="shot"><img src="img/shot-search.png" width="581" height="710" loading="lazy" decoding="async" alt="The Windy popup after typing inv: one row remains, INV-2026-00421, with the matching letters in bold."></div>
+          <figcaption><strong>Type to filter</strong><span>Three letters were enough to find an invoice number. The match is shown in bold.</span></figcaption>
+        </figure>
+        <figure class="card shot-card">
+          <div class="shot plain"><img src="img/shot-settings.png" width="718" height="897" loading="lazy" decoding="async" alt="The Windy Settings window with General, Storage and Appearance sections: shortcut, search mode, paste options, what to save, history size and popup position."></div>
+          <figcaption><strong>Settings</strong><span>Shortcut, search mode, what to save, history size and where the popup opens.</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="shortcuts" aria-labelledby="keys-h">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker">Keyboard</p>
+        <h2 id="keys-h">Every shortcut, at a glance</h2>
+        <p class="muted">Windy is meant to be driven from the keyboard.</p>
+      </header>
+      <figure class="callouts">
+        <img src="img/feature-callouts.svg" width="1200" height="630" loading="lazy" decoding="async" alt="Windy's popup with its main shortcuts. Type to search. Enter copies the selected row and Alt+Enter pastes it. Esc clears the search, then closes. Alt+P pins a row. Ctrl plus 1 to 9 picks one of the first nine rows. Clear all needs two clicks. Windy is open source under the MIT license.">
+      </figure>
+      <div class="card table-card">
+        <table class="keys">
+          <caption class="sr-only">Keyboard shortcuts</caption>
+          <thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd></td><td>Open Windy (<kbd>Cmd</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd> on macOS)</td></tr>
+            <tr><td><kbd>Enter</kbd></td><td>Copy the selected row</td></tr>
+            <tr><td><kbd>Alt</kbd>+<kbd>Enter</kbd></td><td>Paste it into the previous app</td></tr>
+            <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></td><td>Paste without formatting</td></tr>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>1</kbd>…<kbd>9</kbd></td><td>Pick one of the first nine rows</td></tr>
+            <tr><td><kbd>Alt</kbd>+<kbd>P</kbd></td><td>Pin or unpin the row</td></tr>
+            <tr><td><kbd>Alt</kbd>+<kbd>Backspace</kbd></td><td>Delete the row</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>Clear the search, then close</td></tr>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>,</kbd></td><td>Open Settings</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="download" class="band" aria-labelledby="dl-h">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker">Download</p>
+        <h2 id="dl-h">Get Windy</h2>
+        <p class="muted" id="dl-detected">Pick your system.</p>
+      </header>
+      <div class="downloads" id="downloads">
+        <a class="card dl" data-os="windows" href="https://github.com/nAItiklearn/windy/releases/latest">
+          <span class="os-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5 10.5 4.5v7H3Zm8.5-1.1L21 3v8.5h-9.5ZM3 12.5h7.5v7L3 18.5Zm8.5 0H21V21l-9.5-1.3Z" fill="currentColor"/></svg></span>
+          <strong>Windows</strong>
+          <span class="file">Installer (.exe)</span>
+          <span>Developed on Windows 11; Windows 10 should work, not yet verified</span>
+          <span class="badge ok">Tested by hand</span>
+        </a>
+        <a class="card dl" data-os="macos" href="https://github.com/nAItiklearn/windy/releases/latest">
+          <span class="os-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.8-3-.8C7 7.4 5.6 8.3 4.8 9.7c-1.7 2.9-.4 7.2 1.2 9.6.8 1.2 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.8.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7 0 0-2.9-1-3-4.1ZM14.1 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.200 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4Z" fill="currentColor"/></svg></span>
+          <strong>macOS</strong>
+          <span class="file">Disk image (.dmg)</span>
+          <span>macOS 12 or newer should work, not yet verified</span>
+          <span class="badge warn">Early, unverified</span>
+        </a>
+        <a class="card dl" data-os="linux" href="https://github.com/nAItiklearn/windy/releases/latest">
+          <span class="os-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z M8 20h8 M12 16v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m7.5 9 2 1.5-2 1.5M11.5 12.5h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <strong>Linux</strong>
+          <span class="file">AppImage, x86-64</span>
+          <span>X11 and XWayland</span>
+          <span class="badge warn">Early, unverified</span>
+        </a>
+      </div>
+      <p class="muted small center">File names never contain a version, so these links always give you the latest release. Checksums are listed on the <a href="https://github.com/nAItiklearn/windy/releases/latest">release page</a>. Early builds are not code-signed.</p>
+
+      <div class="card table-card status">
+        <h3>Where each build stands</h3>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th scope="col"><span class="sr-only">Capability</span></th><th scope="col">Windows</th><th scope="col">macOS</th><th scope="col">Linux</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Built and unit-tested in CI</th><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+              <tr><th scope="row">Run by hand by the author</th><td class="yes">Yes</td><td class="no">Not yet</td><td class="no">Not yet</td></tr>
+              <tr><th scope="row">Skips password-manager copies</th><td class="yes">Yes</td><td class="no">Not yet</td><td class="no">Not yet</td></tr>
+              <tr><th scope="row">Ignore chosen apps</th><td class="yes">Yes</td><td class="no">Not yet</td><td class="no">Not yet</td></tr>
+              <tr><th scope="row">Ignore by pattern</th><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+              <tr><th scope="row">Native Wayland</th><td class="na">n/a</td><td class="na">n/a</td><td class="no">Not yet (X11 and XWayland work)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section id="faq" aria-labelledby="faq-h">
-    <h2 id="faq-h">Questions</h2>
-    <details><summary>Does Windy send my clipboard anywhere?</summary><p>By design, no. History lives in a local database on your device, and Windy's own code makes no network requests. That is based on code review, not a packet capture, and the system webview that draws the windows is a separate component.</p></details>
-    <details><summary>Will it record my passwords?</summary><p>On Windows, Windy skips copies that password managers mark as sensitive, and you can ignore chosen apps in Settings. Both are Windows-only in v0.1 and not yet implemented on macOS or Linux, where a copied password can be recorded. You can also add ignore patterns in Settings.</p></details>
-    <details><summary>Is it the same as Maccy?</summary><p>No. Maccy is a macOS app. Windy follows the same simple behaviour but is a separate project that runs on Windows, macOS and Linux.</p></details>
-    <details><summary>Does it work on Linux Wayland?</summary><p>Not natively yet. Linux support in v0.1 is X11, including XWayland on Wayland desktops. Native Wayland is a known limitation of this version, so clipboard history, global shortcuts and popup placement on Wayland sessions may not work. The Linux build has not yet been run on real hardware, so treat Linux as unverified. Details are in the project README.</p></details>
-    <details><summary>The installer says the publisher is unknown.</summary><p>Early builds are not code-signed, so Windows SmartScreen and macOS Gatekeeper warn you. The source and checksums are public so you can verify what you run.</p></details>
-    <details><summary>How much does it cost?</summary><p>Nothing. It is MIT licensed.</p></details>
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker">FAQ</p>
+        <h2 id="faq-h">Questions</h2>
+      </header>
+      <div class="faq">
+        <details><summary>Does Windy send my clipboard anywhere?</summary><p>By design, no. History lives in a local database on your device, and Windy's own code makes no network requests. That is based on code review, not a packet capture, and the system webview that draws the windows is a separate component.</p></details>
+        <details><summary>Will it record my passwords?</summary><p>On Windows, Windy skips copies that password managers mark as sensitive, and you can ignore chosen apps in Settings. Both are Windows-only in v0.1 and not yet implemented on macOS or Linux, where a copied password can be recorded. You can also add ignore patterns in Settings.</p></details>
+        <details><summary>Is it the same as Maccy?</summary><p>No. Maccy is a macOS app. Windy follows the same simple behaviour but is a separate project that runs on Windows, macOS and Linux.</p></details>
+        <details><summary>Does it work on Linux Wayland?</summary><p>Not natively yet. Linux support in v0.1 is X11, including XWayland on Wayland desktops. Native Wayland is a known limitation of this version, so clipboard history, global shortcuts and popup placement on Wayland sessions may not work. The Linux build has not yet been run on real hardware, so treat Linux as unverified. Details are in the project README.</p></details>
+        <details><summary>The installer says the publisher is unknown.</summary><p>Early builds are not code-signed, so Windows SmartScreen and macOS Gatekeeper warn you. The source and checksums are public so you can verify what you run.</p></details>
+        <details><summary>How much does it cost?</summary><p>Nothing. It is MIT licensed.</p></details>
+      </div>
+    </div>
   </section>
 
   <section id="contact" aria-labelledby="contact-h">
-    <h2 id="contact-h">Contact</h2>
-    <p>Questions, bugs and ideas are welcome on <a href="https://github.com/nAItiklearn/windy/issues">GitHub Issues</a>. Security reports: see <a href="https://github.com/nAItiklearn/windy/security/policy">the security policy</a>.</p>
+    <div class="wrap">
+      <div class="cta-band">
+        <div>
+          <h2 id="contact-h">Found a bug or have an idea?</h2>
+          <p>Questions, bugs and ideas are welcome on GitHub Issues. Security reports: see <a href="https://github.com/nAItiklearn/windy/security/policy">the security policy</a>.</p>
+        </div>
+        <div class="cta-band-actions">
+          <a class="button" href="https://github.com/nAItiklearn/windy/issues/new">Open an issue</a>
+          <a class="button secondary" href="#download">Download</a>
+        </div>
+      </div>
+    </div>
   </section>
 </main>
 
-<footer>
-  <p>Windy is MIT licensed. It credits <a href="https://github.com/p0deje/Maccy">Maccy</a> (MIT) for the behaviour it follows. <a href="https://github.com/nAItiklearn/windy">Source</a></p>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top"><img src="favicon.svg" width="24" height="24" alt=""> Windy</a>
+        <p>A calm clipboard history for Windows, macOS and Linux. Your history stays on your device.</p>
+      </div>
+      <nav aria-label="Product">
+        <h3>Product</h3>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#try">Live demo</a>
+        <a href="#shortcuts">Shortcuts</a>
+        <a href="#download">Download</a>
+      </nav>
+      <nav aria-label="Project">
+        <h3>Project</h3>
+        <a href="https://github.com/nAItiklearn/windy">Source code</a>
+        <a href="https://github.com/nAItiklearn/windy/releases">Releases</a>
+        <a href="https://github.com/nAItiklearn/windy/issues">Issues</a>
+        <a href="https://github.com/nAItiklearn/windy/blob/main/LICENSE">License (MIT)</a>
+      </nav>
+      <nav aria-label="Help">
+        <h3>Help</h3>
+        <a href="#faq">FAQ</a>
+        <a href="https://github.com/nAItiklearn/windy#readme">README</a>
+        <a href="https://github.com/nAItiklearn/windy/security/policy">Security policy</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <p>Windy is MIT licensed. It credits <a href="https://github.com/p0deje/Maccy">Maccy</a> (MIT) for the behaviour it follows.</p>
+      <p>This page sets no cookies and loads no third-party scripts.</p>
+    </div>
+  </div>
 </footer>
 <script src="app.js" defer></script>
 </body>
