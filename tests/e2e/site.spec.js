@@ -44,23 +44,20 @@ test("page has the basics: title, FAQ, contact, no external scripts", async ({ p
   expect(external).toBe(0);
 });
 
-test("the shortcuts graphic loads, is described, and reserves its space", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
+test("the screenshots are real captures that load and are described", async ({ page }) => {
   await page.goto(SITE);
-  const img = page.locator(".callouts img");
-  // The graphic is lazy-loaded below the fold, so bring it into view first.
-  await img.scrollIntoViewIfNeeded();
-  await expect(img).toBeVisible();
-  await expect(img).toHaveAttribute("alt", /Alt\+P pins a row/);
-  await expect(img).toHaveAttribute("width", "1200");
-  await expect(img).toHaveAttribute("height", "630");
-  await expect.poll(() => img.evaluate((el) => (el.complete ? el.naturalWidth : 0))).toBe(1200);
+  const shots = page.locator(".gallery img");
+  await expect(shots).toHaveCount(3);
+  for (const img of await shots.all()) {
+    await img.scrollIntoViewIfNeeded();
+    await expect(img).toHaveAttribute("alt", /Windy/);
+    await expect.poll(() => img.evaluate((el) => (el.complete ? el.naturalWidth : 0))).toBeGreaterThan(0);
+  }
 });
 
-test("the shortcuts graphic is hidden on phones and the page does not scroll sideways", async ({ page }) => {
+test("the page fits a phone screen without scrolling sideways", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(SITE);
-  await expect(page.locator(".callouts")).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
   // overflow:hidden on a section can mask clipping, so also check that key blocks fit on screen.
   const clipped = await page.$$eval(".hero-copy, #primary-download, .popup, .card, .cta-band", (els) =>
